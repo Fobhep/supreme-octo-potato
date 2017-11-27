@@ -1,0 +1,87 @@
+% Originally in http://www.debian.org/~jgg/card.tex
+
+\documentclass[11pt,a4paper,final]{article}
+\usepackage[dvips]{graphicx}
+\usepackage{pst-barcode}
+\usepackage{color}
+\usepackage{ifdraft}
+
+\pagestyle{empty}
+
+\setlength{\textwidth}{7in}
+\setlength{\hoffset}{0in}
+\setlength{\voffset}{0in}
+\setlength{\oddsidemargin}{-.8in}
+\setlength{\evensidemargin}{-.8in}
+\setlength{\textheight}{10in}
+\setlength{\topmargin}{-0.87in}
+
+\newcommand{\xSSID}{ESSID:\ SSID-TEMPLATE}
+\newcommand{\xENC}{Encryption:\ ENC-TEMPLATE}
+\newcommand{\xPSKA}{PSK:\ PSK1-TEMPLATE}
+\newcommand{\xPSKB}{\ \ \ \ \ PSK2-TEMPLATE}
+\newcommand{\xDMTX}{DMTX-TEMPLATE}
+
+\begin{document}
+\setlength{\unitlength}{1mm}
+\psset{unit=1mm}
+\begin{picture}(178,253)(-7,-1)
+  \ifdraft
+  {
+    \multiput(1,255)(1,0){88}{\color{lightgray}\line(0,-1){51}}
+    \multiput(0,254)(0,-1){50}{\color{lightgray}\line(1,0){89}}
+    \put(0,255){\line(0,-1){51}}
+    \put(89,255){\line(0,-1){51}}
+    \put(0,255){\line(1,0){89}}
+    \put(0,204){\line(1,0){89}}
+  }
+  {}
+
+  % Vert ticks along the bottom
+  \put(0,-1){\line(0,-1){3}}
+  \put(89,-1){\line(0,-1){3}}
+  \put(179,-1){\line(0,-1){3}}
+
+  % Vert ticks along the top
+  \put(0,255){\line(0,1){3}}
+  \put(89,255){\line(0,1){3}}
+  \put(179,255){\line(0,1){3}}
+
+    \put(-1,-1){\line(-1,0){3}}
+    \put(180,-1){\line(1,0){3}}
+
+  \multiput(0,0)(0,51.0){5}{
+    % Ticks on the side of each card
+    \put(-1,51){\line(-1,0){3}}
+    \put(180,51){\line(1,0){3}}
+    \multiput(0,0)(89,0){2}{
+      \begin{picture}(89,51)(0,0)
+
+        \put(3,16){\large\ttfamily\xSSID}
+        \put(3,12){\large\ttfamily\xENC}
+
+        \put(3,8){\large\ttfamily\xPSKA}
+        \put(3,4){\large\ttfamily\xPSKB}
+
+        \put(5,24){
+	  \degrees
+	  \psset{linecolor=black,linewidth=2.0}
+	  \qdisk(2.0,2.0){2.0}
+	  \psset{linecolor=darkgray,linewidth=2.0}
+	  \psarc{c-c}(2.0,2.0){6}{-3}{93}
+	  \psset{linecolor=gray,linewidth=2.0}
+	  \psarc{c-c}(2.0,2.0){12}{-3}{93}
+	  \psset{linecolor=lightgray,linewidth=2.0}
+	  \psarc{c-c}(2.0,2.0){18}{-3}{93}
+	}
+        \put(50,15)
+	{
+	  % \psbarcode[scalex=1.5,scaley=1.5]{\xDMTX}{}{datamatrix}
+	  %\psbarcode{\xDMTX}{width=1.2 height=1.2}{datamatrix}
+	  \psbarcode{\xDMTX}{width=1.2 height=1.2}{qrcode}
+	}
+      \end{picture}
+    }
+  }
+\end{picture}
+\end{document}
