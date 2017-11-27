@@ -1,10 +1,10 @@
 #!/bin/env/python3
+# authors: Matthias Dellweg & Bernhard Hopfenmüller
+# (c) 2017
+
 import subprocess
 import re
-#output, returncode = run_command('zbarcam')
 
-# stdoutdata = check_output("zbarcam", shell=True)
-# print stdoutdata
 qr_wifi_match_pattern = r"QR-Code:WIFI:S:(?P<ssid>[^;]*);T:(?P<type>[^;]*);P:(?P<passphrase>[^;]{0,63});;"
 
 
