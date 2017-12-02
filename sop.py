@@ -1,15 +1,18 @@
-#!/bin/env/python3
+#!/usr/bin/env python3
 # authors: Matthias Dellweg & Bernhard Hopfenmüller
 # (c) 2017
 
+import importlib
+import pkgutil
 import subprocess
-import re
+import sys
+import os
 
-qr_wifi_match_pattern = r"QR-Code:WIFI:S:(?P<ssid>[^;]*);T:(?P<type>[^;]*);P:(?P<passphrase>[^;]{0,63});;"
+import sop.plugins
 
 
-def read_code():
-    process = subprocess.Popen(['zbarcam', '/dev/video1'],
+def read_code(plugins):
+    process = subprocess.Popen(['zbarcam', '/dev/video0'],
                                stdout=subprocess.PIPE)
 
     while True:
@@ -18,13 +21,19 @@ def read_code():
             break
         if output:
             output_str = output.strip().decode("utf8")
-            match = re.match(qr_wifi_match_pattern, output_str)
-            if match:
-                process.kill()
-                subprocess.Popen(["echo" ,'-n' ,'\a'])
-                return match.group('ssid'), match.group('passphrase')
+            for plugin in plugins:
+                if plugin.handle(output_str):
+                    process.kill()
+                    sys.stdout.write("\a")  # Beep
+                    return
         rc = process.poll()
 
 if __name__ == "__main__":
-    ssid,passphrase = read_code()
-    subprocess.run(['nmcli', 'device', 'wifi', 'connect', ssid, 'password', passphrase])
+    sop_plugins = [
+        importlib.import_module(name).sop_plugin()
+        for finder, name, ispkg
+        in pkgutil.iter_modules(sop.plugins.__path__, sop.plugins.__name__ + '.')
+    ]
+
+    read_code(sop_plugins)
+    sys.exit(0)
