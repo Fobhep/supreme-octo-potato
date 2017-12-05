@@ -11,6 +11,6 @@ test-setup:
 	pip install -r requirements.txt
 
 lint:
-pycodestyle --ignore=E402,E722 --max-line-length=160 . sop
+	pycodestyle --ignore=E402,E722 --max-line-length=160 . sop
 
 .PHONY: help lint test-setup
