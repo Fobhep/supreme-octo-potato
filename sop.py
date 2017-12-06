@@ -7,6 +7,8 @@ import pkgutil
 import subprocess
 import sys
 import os
+import logging
+import click
 
 import sop.plugins
 
@@ -29,12 +31,33 @@ def read_code(plugins):
         rc = process.poll()
 
 
-if __name__ == "__main__":
-    sop_plugins = [
-        importlib.import_module(name).sop_plugin()
+def load_plugins(plugin_name=None):
+    sop_plugin_names = [
+        name
         for finder, name, ispkg
         in pkgutil.iter_modules(sop.plugins.__path__, sop.plugins.__name__ + '.')
+        if plugin_name is None or name.endswith('.' + plugin_name)
     ]
+    sop_plugins = []
+    for name in sop_plugin_names:
+        try:
+            sop_plugins.append(importlib.import_module(name).sop_plugin())
+            logging.info("Successfully loaded plugin {}.".format(name))
+        except ImportError as e:
+            logging.warn("Failed to load plugin {}.\n{}".format(name, e))
+    return sop_plugins
 
+
+@click.command()
+@click.option('-p', '--plugin', help='Select the plugin to use')
+def main(plugin):
+    sop_plugins = load_plugins(plugin_name=plugin)
+    if len(sop_plugins) == 0:
+        logging.warn("No plugins loaded!")
+        return 1
     read_code(sop_plugins)
-    sys.exit(0)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
