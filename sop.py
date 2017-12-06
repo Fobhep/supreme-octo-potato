@@ -28,6 +28,7 @@ def read_code(plugins):
                     return
         rc = process.poll()
 
+
 if __name__ == "__main__":
     sop_plugins = [
         importlib.import_module(name).sop_plugin()

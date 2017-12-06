@@ -6,6 +6,7 @@ import logging
 import sys
 import subprocess
 
+
 def sop_plugin():
     return QrWifi()
 
@@ -25,4 +26,3 @@ class QrWifi:
             subprocess.run(['nmcli', 'device', 'wifi', 'connect', ssid, 'password', passphrase])
             return True
         return False
-
