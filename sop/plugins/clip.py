@@ -4,6 +4,7 @@
 import logging
 import pyperclip
 
+
 def sop_plugin():
     return BarClip()
 
