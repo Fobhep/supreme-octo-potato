@@ -31,15 +31,18 @@ def read_code(plugins):
         rc = process.poll()
 
 
-def load_plugins(plugin_name=None):
+def get_plugin_names():
     sop_plugin_names = [
         name
         for finder, name, ispkg
         in pkgutil.iter_modules(sop.plugins.__path__, sop.plugins.__name__ + '.')
-        if plugin_name is None or name.endswith('.' + plugin_name)
     ]
+    return sop_plugin_names
+
+
+def load_plugins(plugin_names):
     sop_plugins = []
-    for name in sop_plugin_names:
+    for name in plugin_names:
         try:
             sop_plugins.append(importlib.import_module(name).sop_plugin())
             logging.info("Successfully loaded plugin {}.".format(name))
@@ -50,8 +53,17 @@ def load_plugins(plugin_name=None):
 
 @click.command()
 @click.option('-p', '--plugin', help='Select the plugin to use')
-def main(plugin):
-    sop_plugins = load_plugins(plugin_name=plugin)
+@click.option('-l', '--list-plugins', help='List available plugins', is_flag=True)
+def main(list_plugins, plugin):
+    plugin_names = get_plugin_names()
+    if list_plugins:
+        click.echo("Available plugins:")
+        for name in plugin_names:
+            click.echo("\t" + name.split('.')[-1])
+        return 0
+    if plugin:
+        plugin_names = [name for name in plugin_names if name.endswith('.' + plugin)]
+    sop_plugins = load_plugins(plugin_names)
     if len(sop_plugins) == 0:
         logging.warn("No plugins loaded!")
         return 1
