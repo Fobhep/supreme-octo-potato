@@ -13,4 +13,7 @@ test-setup:
 lint:
 	pycodestyle --ignore=E402,E722 --max-line-length=160 .
 
-.PHONY: help lint test-setup
+test:
+	python3 -m unittest discover -s tests
+
+.PHONY: help lint test test-setup
