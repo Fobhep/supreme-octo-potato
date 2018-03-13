@@ -9,8 +9,21 @@ def sop_plugin():
 
 
 class BarOut:
+    class Handler:
+        def __init__(self, message):
+            self.message = message
+
+        def handle(self):
+            print(self.message)
+
+        def msg(self):
+            return "Print barcode to stdout."
+
     def __init__(self):
-        logging.debug("Out aktiviert")
+        logging.debug("Output plugin activated")
+
+    def get_handlers(self, message):
+        return [self.Handler(message)]
 
     def handle(self, message):
         print(message)
