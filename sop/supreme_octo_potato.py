@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # authors: Matthias Dellweg & Bernhard Hopfenmüller
 # (c) 2017
 
@@ -69,7 +68,3 @@ def main(list_plugins, plugin):
         return 1
     read_code(sop_plugins)
     return 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())
