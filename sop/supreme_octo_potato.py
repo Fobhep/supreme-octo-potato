@@ -16,18 +16,13 @@ def read_code(plugins):
     process = subprocess.Popen(['zbarcam', '/dev/video0'],
                                stdout=subprocess.PIPE)
 
-    while True:
-        output = process.stdout.readline()
-        if output == '' and process.poll() is not None:
-            break
-        if output:
-            output_str = output.strip().decode("utf8")
-            for plugin in plugins:
-                if plugin.handle(output_str):
-                    process.kill()
-                    sys.stdout.write("\a")  # Beep
-                    return
-        rc = process.poll()
+    for output in iter(process.stdout.readline, b''):
+        output_str = output.strip().decode("utf8")
+        for plugin in plugins:
+            if plugin.handle(output_str):
+                process.kill()
+                sys.stdout.write("\a")  # Beep
+                return
 
 
 def get_plugin_names():
