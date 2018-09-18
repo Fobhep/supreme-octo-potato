@@ -1,5 +1,5 @@
 # authors: Matthias Dellweg & Bernhard Hopfenmüller
-# (c) 2017
+# (c) 2017-2018
 
 import importlib
 import pkgutil
@@ -12,17 +12,39 @@ import click
 import sop.plugins
 
 
+def choices(count):
+    def ret_fun(input):
+        if input == "q":
+            return -1
+        ret = int(input)
+        if ret < 0 or ret >= count:
+            raise ValueError()
+        return ret
+    return ret_fun
+
+
 def read_code(plugins):
     process = subprocess.Popen(['zbarcam', '/dev/video0'],
                                stdout=subprocess.PIPE)
 
     for output in iter(process.stdout.readline, b''):
         output_str = output.strip().decode("utf8")
+        handlers = []
         for plugin in plugins:
-            if plugin.handle(output_str):
-                process.kill()
-                sys.stdout.write("\a")  # Beep
-                return
+            handlers.extend(plugin.get_handlers(output_str))
+        if len(handlers) > 0:
+            process.kill()
+            sys.stdout.write("\a")  # Beep
+            choices = []
+            for i, handler in enumerate(handlers):
+                click.echo("{}\t{}".format(i, handler.msg()), err=True)
+                choices.append(str(i))
+            click.echo("q\tAbort", err=True)
+            choices.append("q")
+            choice = click.prompt("Choose an action", default="0", type=click.Choice(choices), err=True)
+            if choice != "q":
+                handlers[int(choice)].handle()
+            break
 
 
 def get_plugin_names():

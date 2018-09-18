@@ -2,30 +2,29 @@
 # (c) 2017
 
 import logging
-import pyperclip
 
 
 def sop_plugin():
-    return BarClip()
+    return BarOut()
 
 
-class BarClip:
+class BarOut:
     class Handler:
         def __init__(self, message):
             self.message = message
 
         def handle(self):
-            pyperclip.copy(self.message)
+            print(self.message)
 
         def msg(self):
-            return "Copy barcode to clipboard."
+            return "Print barcode to stdout."
 
     def __init__(self):
-        logging.debug("Clipboard plugin activated")
+        logging.debug("Output plugin activated")
 
     def get_handlers(self, message):
         return [self.Handler(message)]
 
     def handle(self, message):
-        pyperclip.copy(message)
+        print(message)
         return True
