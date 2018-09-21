@@ -13,7 +13,7 @@ def sop_plugin():
 
 
 class QrWifi:
-    match_pattern = r"QR-Code:WIFI:S:(?P<ssid>[^;]*);T:(?P<type>[^;]*);P:(?P<passphrase>[^;]{0,63});;"
+    match_pattern = r"WIFI:S:(?P<ssid>[^;]*);T:(?P<type>[^;]*);P:(?P<passphrase>[^;]{0,63});;"
 
     class CopyHandler:
         def __init__(self, ssid, passphrase):
