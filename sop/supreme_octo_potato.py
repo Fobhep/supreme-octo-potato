@@ -8,6 +8,7 @@ import sys
 import os
 import logging
 import click
+import re
 
 import sop.plugins
 
@@ -28,7 +29,8 @@ def read_code(plugins):
                                stdout=subprocess.PIPE)
 
     for output in iter(process.stdout.readline, b''):
-        output_str = output.strip().decode("utf8")[8:]
+        output_str_w_prefix = output.strip().decode("utf8")
+        output_str = re.sub(r'^.*?:', '', output_str_w_prefix)
         handlers = []
         for plugin in plugins:
             handlers.extend(plugin.get_handlers(output_str))
