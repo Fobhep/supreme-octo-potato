@@ -25,7 +25,3 @@ class BarClip:
 
     def get_handlers(self, message):
         return [self.Handler(message)]
-
-    def handle(self, message):
-        pyperclip.copy(message)
-        return True

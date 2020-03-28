@@ -24,7 +24,3 @@ class BarOut:
 
     def get_handlers(self, message):
         return [self.Handler(message)]
-
-    def handle(self, message):
-        print(message)
-        return True
