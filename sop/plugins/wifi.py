@@ -48,12 +48,3 @@ class QrWifi:
             passphrase = match.group('passphrase')
             return [self.CopyHandler(ssid, passphrase), self.ConnectHandler(ssid, passphrase)]
         return []
-
-    def handle(self, message):
-        match = self.matcher.match(message)
-        if match:
-            ssid = match.group('ssid')
-            passphrase = match.group('passphrase')
-            subprocess.run(['nmcli', 'device', 'wifi', 'connect', ssid, 'password', passphrase])
-            return True
-        return False

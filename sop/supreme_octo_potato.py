@@ -13,17 +13,6 @@ import re
 import sop.plugins
 
 
-def choices(count):
-    def ret_fun(input):
-        if input == "q":
-            return -1
-        ret = int(input)
-        if ret < 0 or ret >= count:
-            raise ValueError()
-        return ret
-    return ret_fun
-
-
 def read_code(plugins):
     process = subprocess.Popen(['zbarcam', '/dev/video0'],
                                stdout=subprocess.PIPE)

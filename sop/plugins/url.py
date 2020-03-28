@@ -33,10 +33,3 @@ class QrUrl:
         if match:
             return [self.Handler(message)]
         return []
-
-    def handle(self, message):
-        match = self.matcher.match(message)
-        if match:
-            subprocess.run(['sensible-browser', message])
-            return True
-        return False
